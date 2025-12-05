@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background-color: #000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+canvas {
+    display: block;
+    cursor: crosshair;
+}
+
+/* dat.GUI styling adjustments */
+.dg {
+    z-index: 1000;
+}
+
