@@ -7,6 +7,7 @@ This is a tiny web app that generates procedural circuit board patterns with int
 
 # Demo
 Try out the live demo http://artbit.github.io/circuitboard-painter/
+
 [![Demo](https://github.com/ArtBIT/circuitboard-painter/blob/main/assets/header.png)](http://artbit.github.io/circuitboard-painter/)
 
 # Running it locally
