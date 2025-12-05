@@ -14,9 +14,6 @@ Try out the live demo http://artbit.github.io/circuitboard-painter/
 <video src="https://github.com/user-attachments/assets/442a6f90-cf71-4873-b24f-a952f60e8ae0" width="320" height="240" controls></video>
 
 
-
-
-
 # Running it locally
 ```
 git clone https://github.com/ArtBIT/circuitboard-painter.git
@@ -25,6 +22,10 @@ cd circuitboard-painter
 python3 -m http.server 8000
 # Then open http://localhost:8000 in your browser
 ```
+
+# Credits
+
+Inspired by https://codepen.io/tsuhre/pen/xgmEPe
 
 # License
 
