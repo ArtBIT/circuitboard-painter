@@ -110,6 +110,7 @@ function setup() {
     flowFolder.add(params, 'autoRegenerate').name('Auto Regenerate');
     flowFolder.add(params, 'showFlowGrid').name('Show Flow Field').onChange(() => { redraw(); });
     flowFolder.add(params, 'clearFlowGrid').name('Clear Flow Grid');
+    flowFolder.open();
 
     // Every controller automatically regenerates on change
     gui.add(params, "cellSize", 5, 80, 1).onChange(recreate);
