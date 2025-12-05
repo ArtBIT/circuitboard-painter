@@ -38,7 +38,7 @@ export var params = {
     fgColor: 'rgba(163, 204, 194, 1)', // Converted from HSB(169, 20, 80)
     
     // === FLOW GRID CONTROLS ===
-    paintFlow: false,
+    paintFlow: true,
     brushSize: 3,           // brush radius in cells
     brushOpacity: 0.5,     // 0 to 1
     brushMode: 'brush',     // 'brush' or 'eraser'
