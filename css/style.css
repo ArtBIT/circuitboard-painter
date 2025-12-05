@@ -20,3 +20,31 @@ canvas {
     z-index: 1000;
 }
 
+/* Fork me on GitHub ribbon - bottom right corner */
+.github-fork-ribbon {
+    position: fixed;
+    bottom: 114px;
+    right: -22px;
+    background-color: #24292e;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 40px;
+    z-index: 999;
+    transform: rotate(-45deg);
+    transform-origin: 100% 100%;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.github-fork-ribbon:hover {
+    background-color: #0366d6;
+    color: #fff;
+}
+
+.github-fork-ribbon:visited {
+    color: #fff;
+}
+
