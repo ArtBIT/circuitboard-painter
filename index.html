@@ -2,22 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circuit Board Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Circuitboard Painter</title>
+    <meta name="description" content="Generate procedural circuit board art and steer the traces by painting a flow field.">
+    <meta name="theme-color" content="#0d0b12">
+    <meta property="og:title" content="Circuitboard Painter">
+    <meta property="og:description" content="Generate procedural circuit board art and steer the traces by painting a flow field.">
+    <meta property="og:image" content="assets/header.png">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23330533'/%3E%3Cpath d='M6 22h7l6-6V8M19 26v-4l7-7' fill='none' stroke='%23a3ccc2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='19' cy='7' r='2.5' fill='%23330533' stroke='%23a3ccc2' stroke-width='2'/%3E%3Ccircle cx='6' cy='22' r='2.5' fill='%23330533' stroke='%23a3ccc2' stroke-width='2'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- dat.GUI for control panel -->
-    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"></script>
-    <!-- seedrandom for seeded random number generation -->
-    <script src="https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/seedrandom.min.js"></script>
 </head>
 <body>
-    <!-- Canvas will be created dynamically by the JavaScript -->
+    <canvas id="board" aria-label="Circuit board canvas. Drag to paint the flow field that steers the traces." role="img"></canvas>
+
+    <div class="ui" id="ui">
+        <!-- Top toolbar -->
+        <header class="toolbar glass" role="toolbar" aria-label="Tools">
+            <div class="brand" title="Circuitboard Painter">
+                <span class="brand-mark" data-icon="logo"></span>
+                <span class="brand-name">Circuitboard Painter</span>
+            </div>
+            <span class="divider"></span>
+            <div class="seg" role="radiogroup" aria-label="Tool" id="toolGroup">
+                <button class="icon-btn" role="radio" data-tool="brush" data-icon="brush" data-tip="Flow brush" data-key="B" aria-label="Flow brush"></button>
+                <button class="icon-btn" role="radio" data-tool="line" data-icon="line" data-tip="Straight guide (45°)" data-key="L" aria-label="Straight guide"></button>
+                <button class="icon-btn" role="radio" data-tool="eraser" data-icon="eraser" data-tip="Eraser" data-key="E" aria-label="Eraser"></button>
+            </div>
+            <span class="divider"></span>
+            <button class="icon-btn" id="undoBtn" data-icon="undo" data-tip="Undo" data-key="Ctrl Z" aria-label="Undo"></button>
+            <button class="icon-btn" id="redoBtn" data-icon="redo" data-tip="Redo" data-key="Ctrl Shift Z" aria-label="Redo"></button>
+            <span class="divider"></span>
+            <button class="icon-btn" id="seedBtn" data-icon="dice" data-tip="New random board" data-key="R" aria-label="New random board"></button>
+            <button class="icon-btn" id="flowBtn" data-icon="eye" data-tip="Show flow field" data-key="F" aria-label="Show flow field" aria-pressed="true"></button>
+            <button class="icon-btn" id="animateBtn" data-icon="play" data-tip="Play build animation" data-key="A" aria-label="Play build animation"></button>
+            <button class="icon-btn danger" id="clearBtn" data-icon="trash" data-tip="Clear flow" data-key="Del" aria-label="Clear flow"></button>
+            <button class="apply-btn" id="applyBtn" hidden>
+                <span data-icon="refresh"></span>Apply flow<kbd>Enter</kbd>
+            </button>
+            <span class="divider desktop-only"></span>
+            <button class="icon-btn desktop-only" id="panelToggle" data-icon="sliders" data-tip="Settings panel" data-key="P" aria-label="Settings panel" aria-controls="panel" aria-expanded="true"></button>
+        </header>
+
+        <!-- Settings panel -->
+        <aside class="panel glass" id="panel" aria-label="Settings">
+            <div class="panel-head">
+                <h1>Settings</h1>
+                <div class="panel-actions">
+                    <a class="icon-btn small" href="https://github.com/ArtBIT/circuitboard-painter" target="_blank" rel="noopener noreferrer" data-icon="github" data-tip="Source on GitHub" aria-label="Source on GitHub"></a>
+                    <button class="icon-btn small" id="helpBtn" data-icon="keyboard" data-tip="Keyboard shortcuts" data-key="?" aria-label="Keyboard shortcuts"></button>
+                    <button class="icon-btn small" id="panelClose" data-icon="collapse" data-tip="Hide panel" data-key="P" aria-label="Hide panel"></button>
+                </div>
+            </div>
+            <div class="panel-body" id="panelBody"></div>
+        </aside>
+
+        <button class="icon-btn glass fab mobile-only" id="panelFab" data-icon="sliders" aria-label="Settings" aria-controls="panel" aria-expanded="false"></button>
+
+        <!-- Status / hint -->
+        <footer class="status glass" id="status" aria-live="polite">
+            <span class="status-hint" id="hint"></span>
+            <span class="status-stats" id="stats"></span>
+        </footer>
+    </div>
+
+    <div class="brush-cursor" id="cursor" aria-hidden="true"></div>
+    <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+    <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+    <dialog class="dialog glass" id="helpDialog" aria-labelledby="helpTitle">
+        <div class="dialog-head">
+            <h2 id="helpTitle">How it works</h2>
+            <button class="icon-btn small" data-close data-icon="x" aria-label="Close"></button>
+        </div>
+        <p class="lead">Traces are grown on a grid. Paint on the canvas to create a <b>flow field</b>: wires passing through painted areas bend to follow the direction of your strokes.</p>
+        <div class="shortcut-grid" id="shortcutGrid"></div>
+    </dialog>
+
     <script type="module" src="js/main.js"></script>
-    
-    <!-- Fork me on GitHub ribbon -->
-    <a href="https://github.com/ArtBIT/circuitboard-painter" class="github-fork-ribbon" target="_blank" rel="noopener noreferrer">
-        Fork me on GitHub
-    </a>
 </body>
 </html>
-
